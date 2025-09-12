@@ -64,10 +64,17 @@ class MediaRelationManager extends BaseRelationManager
             ->recordTitleAttribute('name')
             ->modifyQueryUsing(fn (Builder $query) => $query->where('collection_name', $this->mediaCollection)->orderBy('order_column'))
             ->columns([
+                //create table column for image with height and width of 40px and circular
                 Tables\Columns\ImageColumn::make('image')
-                    ->state(function (Media $record): string {
-                        return $record->hasGeneratedConversion('small') ? $record->getUrl('small') : '';
-                    })
+                    ->view('tables.columns.media-thumbnail')
+                    ->disabledClick()
+                    ->height(45)
+                    ->width(45)
+                    ->extraImgAttributes([
+                        'class' => 'max-w-none object-cover object-center ring-1 ring-white dark:ring-gray-900',
+                        'loading' => 'lazy',
+                    ])
+                    ->defaultImageUrl(fn (Media $record): string => $record->getUrl())
                     ->label(__('lunarpanel::relationmanagers.medias.table.image.label')),
                 Tables\Columns\TextColumn::make('file_name')
                     ->limit(30)
