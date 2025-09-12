@@ -417,6 +417,9 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                     $variant->stock = $variantData['stock'];
                     $variant->save();
 
+                    //replace , to . for decimal conversion
+                    $variantData['price'] = str_replace(',', '.', $variantData['price']);
+
                     $basePrice->price = (int) bcmul($variantData['price'], $basePrice->currency->factor);
                     $basePrice->save();
 
